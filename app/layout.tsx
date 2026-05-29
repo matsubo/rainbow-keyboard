@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { getDictionary } from "@/lib/dictionaries"; // Import the dictionary loader
 import { GTM, GTMNoscript } from '@/components/gtm'
+import { siteUrl } from '@/lib/site'
 
 
 // Generate metadata based on locale
@@ -10,6 +11,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   const dictionary = await getDictionary(locale); // Fetch the dictionary
 
   return {
+    metadataBase: new URL(siteUrl),
     title: dictionary.title,
     description: dictionary.description,
     // Optionally add alternates for SEO
