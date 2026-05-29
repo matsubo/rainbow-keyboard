@@ -1,4 +1,4 @@
-# The Rainbow Keyboard
+# 🌈 Rainbow Keyboard
 
 ![Screen Recording 2025-04-26 at 10](https://github.com/user-attachments/assets/925f0cb4-9195-44fd-8af9-bbc2aed6394b)
 
@@ -8,58 +8,70 @@ https://www.youtube.com/watch?v=V5jZVXx117Y&feature=youtu.be
 
 **Engage young learners (0-2 years) with fun keyboard animations!**
 
-This open-source project provides a set of React components and utilities to easily integrate beautiful and engaging keyboard animations into your web applications. Whether you're building educational games for toddlers, interactive learning apps, or simply want to add a playful touch, `Rainbow Keyboard` is here to help.
+Rainbow Keyboard is a full-screen web app for toddlers. Press any key and a giant,
+colorful letter bursts onto the screen at a random spot — and the app reads the key
+out loud. It turns random keyboard mashing into a playful first encounter with
+letters, numbers, and sounds.
 
-## Demo
+## 🎮 Demo
 
 https://rainbow-keyboard.teraren.com/
 
-
 ## ✨ Features
 
-* **Easy Integration:** Simple and intuitive API for quick setup.
-* **Customizable Animations:** Tailor animations to match your application's style and age group.
-* **High Performance:** Smooth and efficient animations using `framer-motion`.
-* **Accessibility:** Designed with accessibility in mind (including for early learners).
-* **Modern Technologies:** Built with the latest React features and best practices.
+* **Press-to-play:** Every keystroke renders a huge animated character.
+* **Spoken letters:** Each key is read aloud via the browser's Web Speech API (with a queue so rapid presses don't overlap).
+* **Vibrant colors:** Letters appear in a random rainbow color at a random position.
+* **Smooth animations:** Powered by `framer-motion`.
+* **Bilingual:** English and Japanese UI via locale dictionaries (`en` / `ja`).
+* **Analytics ready:** Optional Google Analytics & Google Tag Manager tracking of key presses and sessions.
 
 ## 🚀 Getting Started
 
-### Run on local
+This is a [Next.js](https://nextjs.org/) application. [pnpm](https://pnpm.io/) is
+used as the package manager.
 
 ```bash
+# Install dependencies
+pnpm install
+
+# Start the dev server (http://localhost:3000)
 pnpm dev
-````
-
-### Usage
-
-```jsx
-import React from 'react';
-import { KeyboardAnimator, Key } from 'rainbow-keyboard';
-
-const MyComponent = () => {
-  return (
-    <KeyboardAnimator>
-      Press <Key>A</Key> to start!
-    </KeyboardAnimator>
-  );
-};
-
-export default MyComponent;
 ```
+
+Other scripts:
+
+```bash
+pnpm build   # Production build
+pnpm start   # Run the production build
+pnpm lint    # Lint with Next.js ESLint
+```
+
+Open the page in a browser and start pressing keys.
+
+### Configuration
+
+Set the following environment variable to enable Google Tag Manager (optional):
+
+```bash
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+```
+
+See [`GTM_SETUP.md`](./GTM_SETUP.md) for analytics details.
 
 ## 🛠️ Technologies Used
 
-  * **React:** A JavaScript library for building user interfaces.
-  * **framer-motion:** A production-ready motion library for React.
-  * **Next.js:** A React framework for building full-stack web applications.
-  * **Tailwind CSS:** A utility-first CSS framework.
-  * **Radix UI:** A set of unstyled, accessible UI primitives.
-  * **Zod:** A TypeScript-first schema declaration and validation library.
+* **Next.js** — React framework for full-stack web apps.
+* **React 19** — UI library.
+* **framer-motion** — Animation library for React.
+* **Tailwind CSS** — Utility-first CSS framework.
+* **Radix UI** — Unstyled, accessible UI primitives.
+* **TypeScript** — Typed JavaScript.
+* **Web Speech API** — In-browser text-to-speech.
 
 ## 🤝 Contributing
 
-Contributions are welcome\!
+Contributions are welcome!
 
 ## 📄 License
 
@@ -67,65 +79,75 @@ This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgements
 
-  * Special thanks to v0.
+* Special thanks to v0.
 
 -----
 
 ## 日本語
 
-# Rainbow Keyboard
-
-[](https://v0.dev/chat/projects/g8Niqi0Ts9N)
+# 🌈 Rainbow Keyboard
 
 **0歳から2歳までの幼児向けに、楽しいキーボードアニメーションでインタラクションを促進！**
 
-このオープンソースプロジェクトは、ウェブアプリケーションに美しく魅力的なキーボードアニメーションを簡単に統合するためのReactコンポーネントとユーティリティを提供します。 幼児向けの教育ゲーム、インタラクティブな学習アプリ、または単に遊び心のあるタッチを加えたい場合に、`Rainbow Keyboard` が役立ちます。
+Rainbow Keyboard は幼児向けのフルスクリーン Web アプリです。どのキーを押しても、
+大きくカラフルな文字が画面のランダムな位置に飛び出し、押したキーを音声で読み上げます。
+でたらめなキーボード遊びを、文字・数字・音との楽しい最初の出会いに変えます。
 
-## デモ
+## 🎮 デモ
 
 https://rainbow-keyboard.teraren.com/
 
 ## ✨ 特徴
 
-  * **簡単な統合:** 迅速なセットアップのためのシンプルで直感的なAPI。
-  * **カスタマイズ可能なアニメーション:** アプリケーションのスタイルと年齢層に合わせてアニメーションを調整可能。
-  * **高いパフォーマンス:** `framer-motion` を使用したスムーズで効率的なアニメーション。
-  * **アクセシビリティ:** (幼児を含む) アクセシビリティに配慮した設計。
-  * **最新技術:** 最新のReact機能とベストプラクティスに基づいて構築。
+* **押すだけで楽しい:** キーを押すたびに巨大なアニメーション文字が表示されます。
+* **読み上げ:** ブラウザの Web Speech API で各キーを音声読み上げ（連打しても重ならないキュー方式）。
+* **鮮やかな色:** 文字はランダムな虹色・ランダムな位置で表示されます。
+* **滑らかなアニメーション:** `framer-motion` を使用。
+* **多言語対応:** ロケール辞書（`en` / `ja`）による英語・日本語 UI。
+* **アナリティクス対応:** Google Analytics / Google Tag Manager によるキー押下・セッション計測（任意）。
 
 ## 🚀 はじめに
 
-### ローカルで実行
+本アプリは [Next.js](https://nextjs.org/) 製で、パッケージマネージャーに
+[pnpm](https://pnpm.io/) を使用します。
 
 ```bash
+# 依存関係のインストール
+pnpm install
+
+# 開発サーバーの起動（http://localhost:3000）
 pnpm dev
 ```
 
-### 使い方
+その他のスクリプト:
 
-```jsx
-import React from 'react';
-import { KeyboardAnimator, Key } from 'rainbow-keyboard';
-
-const MyComponent = () => {
-  return (
-    <KeyboardAnimator>
-      <Key>A</Key> キーを押して開始！
-    </KeyboardAnimator>
-  );
-};
-
-export default MyComponent;
+```bash
+pnpm build   # 本番ビルド
+pnpm start   # 本番ビルドの起動
+pnpm lint    # Next.js ESLint によるチェック
 ```
+
+ブラウザでページを開き、キーを押して遊んでください。
+
+### 設定
+
+Google Tag Manager を有効にするには、以下の環境変数を設定します（任意）:
+
+```bash
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+```
+
+アナリティクスの詳細は [`GTM_SETUP.md`](./GTM_SETUP.md) を参照してください。
 
 ## 🛠️ 使用技術
 
-  * **React:** ユーザーインターフェースを構築するためのJavaScriptライブラリ。
-  * **framer-motion:** Reactのための実用的なモーションライブラリ。
-  * **Next.js:** フルスタックのウェブアプリケーションを構築するためのReactフレームワーク。
-  * **Tailwind CSS:** ユーティリティファーストのCSSフレームワーク。
-  * **Radix UI:** スタイル付けされていない、アクセス可能なUIプリミティブのセット。
-  * **Zod:** TypeScriptファーストのスキーマ宣言とバリデーションライブラリ。
+* **Next.js** — フルスタック Web アプリ向け React フレームワーク。
+* **React 19** — UI ライブラリ。
+* **framer-motion** — React のアニメーションライブラリ。
+* **Tailwind CSS** — ユーティリティファーストの CSS フレームワーク。
+* **Radix UI** — スタイルなしでアクセシブルな UI プリミティブ。
+* **TypeScript** — 型付き JavaScript。
+* **Web Speech API** — ブラウザ内テキスト読み上げ。
 
 ## 🤝 貢献
 
@@ -133,8 +155,8 @@ export default MyComponent;
 
 ## 📄 ライセンス
 
-このプロジェクトは、MIT Licenseの下でライセンスされています。
+このプロジェクトは MIT License の下でライセンスされています。
 
 ## 🙏 謝辞
 
-  * v0ありがとう。
+* v0 ありがとう。
