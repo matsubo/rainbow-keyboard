@@ -4,16 +4,15 @@
 
 https://www.youtube.com/watch?v=V5jZVXx117Y&feature=youtu.be
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/matsubos-projects/v0-keyboard-animation)
 [![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/g8Niqi0Ts9N)
 
 **Engage young learners (0-2 years) with fun keyboard animations!**
 
-This open-source project provides a set of React components and utilities to easily integrate beautiful and engaging keyboard animations into your web applications. Whether you're building educational games for toddlers, interactive learning apps, or simply want to add a playful touch, `Keyboard Animation` is here to help.
+This open-source project provides a set of React components and utilities to easily integrate beautiful and engaging keyboard animations into your web applications. Whether you're building educational games for toddlers, interactive learning apps, or simply want to add a playful touch, `Rainbow Keyboard` is here to help.
 
 ## Demo
 
-https://v0-keyboard-animation-5e8lk8.vercel.app/
+https://rainbow-keyboard.teraren.com/
 
 
 ## ✨ Features
@@ -36,7 +35,7 @@ pnpm dev
 
 ```jsx
 import React from 'react';
-import { KeyboardAnimator, Key } from 'keyboard-animation';
+import { KeyboardAnimator, Key } from 'rainbow-keyboard';
 
 const MyComponent = () => {
   return (
@@ -74,18 +73,17 @@ This project is licensed under the MIT License.
 
 ## 日本語
 
-# Keyboard Animation
+# Rainbow Keyboard
 
-[](https://vercel.com/matsubos-projects/v0-keyboard-animation)
 [](https://v0.dev/chat/projects/g8Niqi0Ts9N)
 
 **0歳から2歳までの幼児向けに、楽しいキーボードアニメーションでインタラクションを促進！**
 
-このオープンソースプロジェクトは、ウェブアプリケーションに美しく魅力的なキーボードアニメーションを簡単に統合するためのReactコンポーネントとユーティリティを提供します。 幼児向けの教育ゲーム、インタラクティブな学習アプリ、または単に遊び心のあるタッチを加えたい場合に、`Keyboard Animation` が役立ちます。
+このオープンソースプロジェクトは、ウェブアプリケーションに美しく魅力的なキーボードアニメーションを簡単に統合するためのReactコンポーネントとユーティリティを提供します。 幼児向けの教育ゲーム、インタラクティブな学習アプリ、または単に遊び心のあるタッチを加えたい場合に、`Rainbow Keyboard` が役立ちます。
 
 ## デモ
 
-https://v0-keyboard-animation-5e8lk8.vercel.app/
+https://rainbow-keyboard.teraren.com/
 
 ## ✨ 特徴
 
@@ -107,7 +105,7 @@ pnpm dev
 
 ```jsx
 import React from 'react';
-import { KeyboardAnimator, Key } from 'keyboard-animation';
+import { KeyboardAnimator, Key } from 'rainbow-keyboard';
 
 const MyComponent = () => {
   return (

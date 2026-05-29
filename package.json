@@ -1,5 +1,5 @@
 {
-  "name": "my-v0-project",
+  "name": "rainbow-keyboard",
   "version": "0.1.1",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.10.0",
-    "@next/third-parties": "^15.5.9",
+    "@next/third-parties": "^15.5.18",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -39,7 +39,7 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
-    "autoprefixer": "^10.4.22",
+    "autoprefixer": "^10.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
@@ -50,23 +50,23 @@
     "lucide-react": "^0.454.0",
     "next": "15.2.8",
     "next-themes": "^0.4.6",
-    "react": "^19.2.3",
+    "react": "^19.2.6",
     "react-day-picker": "8.10.1",
-    "react-dom": "^19.2.3",
-    "react-hook-form": "^7.68.0",
+    "react-dom": "^19.2.6",
+    "react-hook-form": "^7.76.1",
     "react-resizable-panels": "^2.1.9",
     "recharts": "2.15.0",
     "sonner": "^1.7.4",
-    "tailwind-merge": "^2.6.0",
+    "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/node": "^22.19.2",
-    "@types/react": "^19.2.7",
+    "@types/node": "^22.19.19",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3"
   }

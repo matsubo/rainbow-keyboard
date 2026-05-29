@@ -12,7 +12,7 @@ export default async function Home({ params }: HomePageProps) {
   const locale = params?.locale || 'en'; // Get locale from params, default to 'en'
   const dictionary = await getDictionary(locale); // Fetch the dictionary
   const version = process.env.npm_package_version || '0.1.0'; // Or get version differently
-  const githubUrl = "https://github.com/matsubo/keyboard-animation"; // Replace with your repo URL
+  const githubUrl = "https://github.com/matsubo/rainbow-keyboard"; // Replace with your repo URL
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center justify-center bg-black p-0 overflow-hidden relative">
