@@ -23,7 +23,10 @@ https://rainbow-keyboard.teraren.com/
 * **Spoken letters:** Each key is read aloud via the browser's Web Speech API (with a queue so rapid presses don't overlap).
 * **Vibrant colors:** Letters appear in a random rainbow color at a random position.
 * **Smooth animations:** Powered by `framer-motion`.
-* **Bilingual:** English and Japanese UI via locale dictionaries (`en` / `ja`).
+* **Multilingual + auto-detect:** 9 languages (English, Japanese, Spanish, French, German, Chinese, Korean, Portuguese, Italian). The browser's language is detected and the matching `/<locale>` page is served automatically; spoken letters use that locale's voice.
+* **Touch friendly:** An on-screen keyboard appears on mobile/tablet, where there's no physical keyboard.
+* **Installable (PWA):** Add to a home screen for a distraction-free fullscreen experience.
+* **SEO ready:** Per-locale canonical/hreflang tags, sitemap, robots, and Open Graph / Twitter cards.
 * **Analytics ready:** Optional Google Analytics & Google Tag Manager tracking of key presses and sessions.
 
 ## 🚀 Getting Started
@@ -103,7 +106,10 @@ https://rainbow-keyboard.teraren.com/
 * **読み上げ:** ブラウザの Web Speech API で各キーを音声読み上げ（連打しても重ならないキュー方式）。
 * **鮮やかな色:** 文字はランダムな虹色・ランダムな位置で表示されます。
 * **滑らかなアニメーション:** `framer-motion` を使用。
-* **多言語対応:** ロケール辞書（`en` / `ja`）による英語・日本語 UI。
+* **多言語・自動判定:** 9言語対応（英語・日本語・スペイン語・フランス語・ドイツ語・中国語・韓国語・ポルトガル語・イタリア語）。ブラウザの言語を判定して対応する `/<locale>` ページを自動表示し、読み上げもその言語の音声を使用します。
+* **タッチ対応:** 物理キーボードのないモバイル／タブレットでは画面上にキーボードを表示します。
+* **インストール可能（PWA）:** ホーム画面に追加すると、集中できるフルスクリーンで楽しめます。
+* **SEO 対応:** ロケールごとの canonical / hreflang、サイトマップ、robots、Open Graph / Twitter カードを完備。
 * **アナリティクス対応:** Google Analytics / Google Tag Manager によるキー押下・セッション計測（任意）。
 
 ## 🚀 はじめに

@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import type { Dictionary } from "@/lib/dictionaries" // Import the Dictionary type
 import { trackKeyPress, trackKeyboardSession } from "@/lib/gtm"
+import { useIsMobile } from "@/hooks/use-mobile"
+import OnScreenKeyboard from "@/components/on-screen-keyboard"
 
 // Array of vibrant colors for better visibility
 const colors = [
@@ -24,16 +26,54 @@ const colors = [
   "text-rose-500",
 ]
 
-// Define props interface
-interface KeyboardDisplayProps {
-  dictionary: Dictionary
+// Special keys mapped to their on-screen glyph and spoken word.
+const SPECIAL_KEYS: Record<string, { display: string; speech: string }> = {
+  " ": { display: "SPACE", speech: "space" },
+  Enter: { display: "ENTER", speech: "enter" },
+  Backspace: { display: "BACKSPACE", speech: "backspace" },
+  Escape: { display: "ESC", speech: "escape" },
+  ArrowUp: { display: "↑", speech: "up" },
+  ArrowDown: { display: "↓", speech: "down" },
+  ArrowLeft: { display: "←", speech: "left" },
+  ArrowRight: { display: "→", speech: "right" },
+  Tab: { display: "TAB", speech: "tab" },
+  Control: { display: "CTRL", speech: "control" },
+  Alt: { display: "ALT", speech: "alt" },
+  Shift: { display: "SHIFT", speech: "shift" },
 }
 
-export default function KeyboardDisplay({ dictionary }: KeyboardDisplayProps) {
+// Pure mapping from a raw KeyboardEvent.key (or on-screen key) to what we
+// display and speak. Returns null for keys we intentionally ignore.
+function mapKey(rawKey: string): { display: string; speech: string } | null {
+  if (rawKey in SPECIAL_KEYS) return SPECIAL_KEYS[rawKey]
+  if (rawKey.length > 1) return null // Skip other multi-char keys (F1, etc.)
+  const display = rawKey.toUpperCase()
+  return { display, speech: display.toLowerCase() }
+}
+
+function getRandomColor() {
+  return colors[Math.floor(Math.random() * colors.length)]
+}
+
+// Determine key type for analytics
+function getKeyType(key: string): "letter" | "number" | "special" | "modifier" {
+  if (/^[A-Z]$/.test(key)) return "letter"
+  if (/^[0-9]$/.test(key)) return "number"
+  if (["CTRL", "ALT", "SHIFT"].includes(key)) return "modifier"
+  return "special"
+}
+
+interface KeyboardDisplayProps {
+  dictionary: Dictionary
+  speechLang: string
+}
+
+export default function KeyboardDisplay({ dictionary, speechLang }: KeyboardDisplayProps) {
   const [pressedKey, setPressedKey] = useState<string | null>(null)
   const [keyId, setKeyId] = useState(0)
   const [position, setPosition] = useState({ x: 50, y: 50 })
   const [textColor, setTextColor] = useState("text-white")
+  const isMobile = useIsMobile()
 
   // Session tracking
   const sessionStartTime = useRef<number>(Date.now())
@@ -42,9 +82,11 @@ export default function KeyboardDisplay({ dictionary }: KeyboardDisplayProps) {
   // Speech queue system
   const speechQueue = useRef<string[]>([])
   const isSpeaking = useRef(false)
+  const speechLangRef = useRef(speechLang)
+  speechLangRef.current = speechLang
 
   // Process the speech queue
-  const processSpeechQueue = () => {
+  const processSpeechQueue = useCallback(() => {
     if (speechQueue.current.length === 0 || isSpeaking.current) {
       return
     }
@@ -52,6 +94,7 @@ export default function KeyboardDisplay({ dictionary }: KeyboardDisplayProps) {
     isSpeaking.current = true
     const text = speechQueue.current.shift() as string
     const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = speechLangRef.current // Pronounce in the page's language
 
     utterance.onend = () => {
       isSpeaking.current = false
@@ -64,30 +107,41 @@ export default function KeyboardDisplay({ dictionary }: KeyboardDisplayProps) {
     }
 
     window.speechSynthesis.speak(utterance)
-  }
+  }, [])
 
   // Add to speech queue and process, but limit to max 3 items
-  const queueSpeech = (text: string) => {
-    // Only add to queue if there are fewer than 3 items
-    if (speechQueue.current.length < 3) {
-      speechQueue.current.push(text)
-      processSpeechQueue()
-    }
-  }
+  const queueSpeech = useCallback(
+    (text: string) => {
+      if (speechQueue.current.length < 3) {
+        speechQueue.current.push(text)
+        processSpeechQueue()
+      }
+    },
+    [processSpeechQueue],
+  )
 
-  // Get a random color from the colors array
-  const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * colors.length)
-    return colors[randomIndex]
-  }
+  // Shared activation pipeline for both physical and on-screen key presses.
+  const activateKey = useCallback(
+    (rawKey: string) => {
+      const mapped = mapKey(rawKey)
+      if (!mapped) return
 
-  // Determine key type for analytics
-  const getKeyType = (key: string): 'letter' | 'number' | 'special' | 'modifier' => {
-    if (/^[A-Z]$/.test(key)) return 'letter'
-    if (/^[0-9]$/.test(key)) return 'number'
-    if (['CTRL', 'ALT', 'SHIFT'].includes(key)) return 'modifier'
-    return 'special'
-  }
+      const newX = Math.random() * 70
+      const newY = Math.random() * 70 - 30
+      const newColor = getRandomColor()
+
+      trackKeyPress(mapped.display, getKeyType(mapped.display))
+      totalKeysPressed.current += 1
+
+      queueSpeech(mapped.speech)
+
+      setKeyId((prevId) => prevId + 1)
+      setPressedKey(mapped.display)
+      setPosition({ x: newX, y: newY })
+      setTextColor(newColor)
+    },
+    [queueSpeech],
+  )
 
   useEffect(() => {
     // Send session statistics every 30 seconds
@@ -99,83 +153,23 @@ export default function KeyboardDisplay({ dictionary }: KeyboardDisplayProps) {
     }, 30000)
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Get the key value
-      let key = event.key
-
-      // Handle special keys
-      if (key === " ") key = "SPACE"
-      else if (key === "Enter") key = "ENTER"
-      else if (key === "Backspace") key = "BACKSPACE"
-      else if (key === "Escape") key = "ESC"
-      else if (key === "ArrowUp") key = "↑"
-      else if (key === "ArrowDown") key = "↓"
-      else if (key === "ArrowLeft") key = "←"
-      else if (key === "ArrowRight") key = "→"
-      else if (key === "Tab") key = "TAB"
-      else if (key === "Control") key = "CTRL"
-      else if (key === "Alt") key = "ALT"
-      else if (key === "Shift") key = "SHIFT"
-      else if (key.length > 1) return // Skip other special keys
-
-      // Convert to uppercase for display
-      key = key.toUpperCase()
-
-      // Prepare speech text
-      let speechText = key
-      // For special keys, keep the full name for speech
-      if (key === "SPACE") speechText = "space"
-      else if (key === "ENTER") speechText = "enter"
-      else if (key === "BACKSPACE") speechText = "backspace"
-      else if (key === "ESC") speechText = "escape"
-      else if (key === "↑") speechText = "up"
-      else if (key === "↓") speechText = "down"
-      else if (key === "←") speechText = "left"
-      else if (key === "→") speechText = "right"
-      else if (key === "TAB") speechText = "tab"
-      else if (key === "CTRL") speechText = "control"
-      else if (key === "ALT") speechText = "alt"
-      else if (key.length === 1) speechText = key.toLowerCase() // Just say the letter, not "capital A"
-
-      // Generate random position within safe boundaries
-      const newX = Math.random() * 70
-      const newY = Math.random() * 70 - 30
-
-      // Get a random color
-      const newColor = getRandomColor()
-
-      // Track key press analytics
-      const keyType = getKeyType(key)
-      trackKeyPress(key, keyType)
-      
-      // Update session statistics
-      totalKeysPressed.current += 1
-
-      // Add to speech queue instead of speaking directly
-      queueSpeech(speechText)
-
-      // Update state with new key, ID, position, and color
-      setKeyId((prevId) => prevId + 1)
-      setPressedKey(key)
-      setPosition({ x: newX, y: newY })
-      setTextColor(newColor)
+      activateKey(event.key)
     }
 
-    // Add event listener
     window.addEventListener("keydown", handleKeyDown)
 
-    // Clean up
     return () => {
       clearInterval(sessionInterval)
       window.removeEventListener("keydown", handleKeyDown)
       window.speechSynthesis.cancel()
-      
+
       // Send final session statistics
       if (totalKeysPressed.current > 0) {
         const sessionDuration = Math.floor((Date.now() - sessionStartTime.current) / 1000)
         trackKeyboardSession(totalKeysPressed.current, sessionDuration)
       }
     }
-  }, [])
+  }, [activateKey])
 
   return (
     <div className="relative flex h-screen w-full items-center justify-center bg-gray-900">
@@ -199,6 +193,7 @@ export default function KeyboardDisplay({ dictionary }: KeyboardDisplayProps) {
         )}
       </AnimatePresence>
       {!pressedKey && <p className="text-2xl text-gray-500">{dictionary.keyboardPlaceholder}</p>}
+      {isMobile && <OnScreenKeyboard onKeyTap={activateKey} />}
     </div>
   )
 }

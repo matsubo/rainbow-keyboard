@@ -1,5 +1,6 @@
 {
   "title": "レインボーキーボード",
   "description": "虹色に光るキーボードのアニメーションです。",
-  "keyboardPlaceholder": "キーを押してね..."
+  "keyboardPlaceholder": "キーを押してね...",
+  "heading": "レインボーキーボード — キーを押すとカラフルな文字が表示されます"
 }
