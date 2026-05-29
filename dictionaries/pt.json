@@ -2,5 +2,9 @@
   "title": "Teclado Arco-íris",
   "description": "Animação de um teclado brilhando com as cores do arco-íris.",
   "keyboardPlaceholder": "Pressione qualquer tecla...",
-  "heading": "Teclado Arco-íris — pressione qualquer tecla para ver letras coloridas"
+  "heading": "Teclado Arco-íris — pressione qualquer tecla para ver letras coloridas",
+  "tapToStart": "Toque para começar",
+  "mute": "Silenciar",
+  "unmute": "Ativar som",
+  "language": "Idioma"
 }

@@ -2,5 +2,9 @@
   "title": "彩虹键盘",
   "description": "闪耀彩虹色的键盘动画。",
   "keyboardPlaceholder": "按任意键...",
-  "heading": "彩虹键盘 — 按任意键即可显示彩色字母"
+  "heading": "彩虹键盘 — 按任意键即可显示彩色字母",
+  "tapToStart": "点击开始",
+  "mute": "静音",
+  "unmute": "取消静音",
+  "language": "语言"
 }

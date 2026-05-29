@@ -2,5 +2,9 @@
   "title": "Clavier Arc-en-ciel",
   "description": "Animation d'un clavier qui brille aux couleurs de l'arc-en-ciel.",
   "keyboardPlaceholder": "Appuie sur une touche...",
-  "heading": "Clavier Arc-en-ciel — appuie sur une touche pour voir des lettres colorées"
+  "heading": "Clavier Arc-en-ciel — appuie sur une touche pour voir des lettres colorées",
+  "tapToStart": "Touchez pour commencer",
+  "mute": "Couper le son",
+  "unmute": "Activer le son",
+  "language": "Langue"
 }

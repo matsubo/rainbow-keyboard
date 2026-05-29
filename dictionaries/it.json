@@ -2,5 +2,9 @@
   "title": "Tastiera Arcobaleno",
   "description": "Animazione di una tastiera che brilla con i colori dell'arcobaleno.",
   "keyboardPlaceholder": "Premi un tasto qualsiasi...",
-  "heading": "Tastiera Arcobaleno — premi un tasto per vedere lettere colorate"
+  "heading": "Tastiera Arcobaleno — premi un tasto per vedere lettere colorate",
+  "tapToStart": "Tocca per iniziare",
+  "mute": "Disattiva audio",
+  "unmute": "Attiva audio",
+  "language": "Lingua"
 }

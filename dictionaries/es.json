@@ -2,5 +2,9 @@
   "title": "Teclado Arcoíris",
   "description": "Animación de un teclado que brilla con los colores del arcoíris.",
   "keyboardPlaceholder": "Pulsa cualquier tecla...",
-  "heading": "Teclado Arcoíris: pulsa cualquier tecla para ver letras de colores"
+  "heading": "Teclado Arcoíris: pulsa cualquier tecla para ver letras de colores",
+  "tapToStart": "Toca para empezar",
+  "mute": "Silenciar",
+  "unmute": "Activar sonido",
+  "language": "Idioma"
 }
