@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Type-check & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Build
+        run: pnpm build
+
+  # Records a deployment to the "production" environment so it shows up on the
+  # repo Deployments page (https://github.com/matsubo/rainbow-keyboard/deployments).
+  # The actual deploy is performed by Coolify via its push webhook; this job just
+  # marks the production environment once the build is verified on main.
+  deployment:
+    name: Production
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://rainbow-keyboard.teraren.com
+    steps:
+      - name: Mark production deployment
+        run: echo "Build verified for ${{ github.sha }} — deployed to production by Coolify."
