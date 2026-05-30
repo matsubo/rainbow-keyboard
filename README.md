@@ -4,8 +4,6 @@
 
 https://www.youtube.com/watch?v=V5jZVXx117Y&feature=youtu.be
 
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/g8Niqi0Ts9N)
-
 **Engage young learners (0-2 years) with fun keyboard animations!**
 
 Rainbow Keyboard is a full-screen web app for toddlers. Press any key and a giant,
@@ -79,10 +77,6 @@ Contributions are welcome!
 ## 📄 License
 
 This project is licensed under the MIT License.
-
-## 🙏 Acknowledgements
-
-* Special thanks to v0.
 
 -----
 
@@ -162,7 +156,3 @@ NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 ## 📄 ライセンス
 
 このプロジェクトは MIT License の下でライセンスされています。
-
-## 🙏 謝辞
-
-* v0 ありがとう。
