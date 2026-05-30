@@ -68,22 +68,23 @@ jobs:
           fi
           echo "uuid=$uuid" >> "$GITHUB_OUTPUT"
 
-      - name: Wait for deployment to finish
+      # Reading the Coolify deployment status needs a token with "read"
+      # permission; a deploy-only token cannot. To keep token scope minimal we
+      # instead confirm the deploy by polling the public site for HTTP 200.
+      - name: Wait for the site to be healthy
+        env:
+          SITE_URL: https://rainbow-keyboard.teraren.com/
         run: |
           set -euo pipefail
-          base="${COOLIFY_BASE_URL%/}"
-          uuid="${{ steps.trigger.outputs.uuid }}"
-          for i in $(seq 1 90); do
-            status=$(curl -fsS "$base/api/v1/deployments/$uuid" \
-              -H "Authorization: Bearer $COOLIFY_API_TOKEN" | jq -r '(.status // .data.status) // "unknown"')
-            echo "[$i] status=$status"
-            case "$status" in
-              finished|success) echo "Deployment succeeded."; exit 0 ;;
-              failed|error|cancelled) echo "::error::Deployment $status"; exit 1 ;;
-            esac
+          echo "Deployment ${{ steps.trigger.outputs.uuid }} triggered; polling $SITE_URL ..."
+          sleep 20  # give Coolify time to start the new container
+          for i in $(seq 1 48); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$SITE_URL" || echo 000)
+            echo "[$i] HTTP $code"
+            if [ "$code" = "200" ]; then echo "Site is healthy."; exit 0; fi
             sleep 10
           done
-          echo "::error::Timed out waiting for the deployment to finish."
+          echo "::error::Site did not return HTTP 200 within the timeout."
           exit 1
 
   # Records the deployment to the "production" environment (shown on the repo
