@@ -37,13 +37,60 @@ jobs:
       - name: Build
         run: pnpm build
 
-  # Records a deployment to the "production" environment so it shows up on the
-  # repo Deployments page (https://github.com/matsubo/rainbow-keyboard/deployments).
-  # The actual deploy is performed by Coolify via its push webhook; this job just
-  # marks the production environment once the build is verified on main.
-  deployment:
-    name: Production
+  # Triggers the Coolify deployment and waits for it to finish. Only after the
+  # build (check) passes, and only on pushes to main.
+  deploy:
+    name: Deploy (Coolify)
     needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
+      COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+      APP_UUID: g74ubw09wmzn7m1pcmr2aawb
+    steps:
+      - name: Trigger Coolify deployment
+        id: trigger
+        run: |
+          set -euo pipefail
+          if [ -z "${COOLIFY_BASE_URL:-}" ] || [ -z "${COOLIFY_API_TOKEN:-}" ]; then
+            echo "::error::COOLIFY_BASE_URL / COOLIFY_API_TOKEN secrets are not set."
+            exit 1
+          fi
+          base="${COOLIFY_BASE_URL%/}"
+          resp=$(curl -fsS "$base/api/v1/deploy?uuid=$APP_UUID" \
+            -H "Authorization: Bearer $COOLIFY_API_TOKEN")
+          echo "$resp"
+          uuid=$(echo "$resp" | jq -r '(.deployments // .data.deployments)[0].deployment_uuid // empty')
+          if [ -z "$uuid" ]; then
+            echo "::error::Could not parse deployment_uuid from Coolify response."
+            exit 1
+          fi
+          echo "uuid=$uuid" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for deployment to finish
+        run: |
+          set -euo pipefail
+          base="${COOLIFY_BASE_URL%/}"
+          uuid="${{ steps.trigger.outputs.uuid }}"
+          for i in $(seq 1 90); do
+            status=$(curl -fsS "$base/api/v1/deployments/$uuid" \
+              -H "Authorization: Bearer $COOLIFY_API_TOKEN" | jq -r '(.status // .data.status) // "unknown"')
+            echo "[$i] status=$status"
+            case "$status" in
+              finished|success) echo "Deployment succeeded."; exit 0 ;;
+              failed|error|cancelled) echo "::error::Deployment $status"; exit 1 ;;
+            esac
+            sleep 10
+          done
+          echo "::error::Timed out waiting for the deployment to finish."
+          exit 1
+
+  # Records the deployment to the "production" environment (shown on the repo
+  # Deployments page) — only after Coolify reports success.
+  production:
+    name: Record production deployment
+    needs: deploy
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
@@ -51,4 +98,4 @@ jobs:
       url: https://rainbow-keyboard.teraren.com
     steps:
       - name: Mark production deployment
-        run: echo "Build verified for ${{ github.sha }} — deployed to production by Coolify."
+        run: echo "Coolify deploy of ${{ github.sha }} verified; recorded to production."
