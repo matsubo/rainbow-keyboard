@@ -81,9 +81,11 @@ jobs:
           set -euo pipefail
           echo "Deployment ${{ steps.trigger.outputs.uuid }} triggered; polling origin ..."
           sleep 30  # give Coolify time to build and start the new container
+          # Hit a concrete locale page (/ redirects 307 via middleware). -L
+          # follows redirects; the unique query + no-cache headers bypass the edge.
           for i in $(seq 1 60); do
-            url="https://$SITE_HOST/?ci=${{ github.run_id }}-$i"
-            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
+            url="https://$SITE_HOST/en?ci=${{ github.run_id }}-$i"
+            code=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 10 \
               -H "Cache-Control: no-cache" -H "Pragma: no-cache" "$url" || echo 000)
             echo "[$i] HTTP $code"
             if [ "$code" = "200" ]; then echo "Origin is healthy."; exit 0; fi
