@@ -48,6 +48,9 @@ jobs:
       COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
       COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
       APP_UUID: g74ubw09wmzn7m1pcmr2aawb
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+      SITE_HOST: rainbow-keyboard.teraren.com
     steps:
       - name: Trigger Coolify deployment
         id: trigger
@@ -70,22 +73,43 @@ jobs:
 
       # Reading the Coolify deployment status needs a token with "read"
       # permission; a deploy-only token cannot. To keep token scope minimal we
-      # instead confirm the deploy by polling the public site for HTTP 200.
+      # instead confirm the deploy by polling the site for HTTP 200. A unique
+      # query string + no-cache headers bypass the Cloudflare edge so we hit the
+      # origin (the new container) rather than a cached copy.
       - name: Wait for the site to be healthy
-        env:
-          SITE_URL: https://rainbow-keyboard.teraren.com/
         run: |
           set -euo pipefail
-          echo "Deployment ${{ steps.trigger.outputs.uuid }} triggered; polling $SITE_URL ..."
-          sleep 20  # give Coolify time to start the new container
-          for i in $(seq 1 48); do
-            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$SITE_URL" || echo 000)
+          echo "Deployment ${{ steps.trigger.outputs.uuid }} triggered; polling origin ..."
+          sleep 30  # give Coolify time to build and start the new container
+          for i in $(seq 1 60); do
+            url="https://$SITE_HOST/?ci=${{ github.run_id }}-$i"
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
+              -H "Cache-Control: no-cache" -H "Pragma: no-cache" "$url" || echo 000)
             echo "[$i] HTTP $code"
-            if [ "$code" = "200" ]; then echo "Site is healthy."; exit 0; fi
+            if [ "$code" = "200" ]; then echo "Origin is healthy."; exit 0; fi
             sleep 10
           done
           echo "::error::Site did not return HTTP 200 within the timeout."
           exit 1
+
+      # Purge only this host's cached objects from the shared teraren.com zone
+      # (not purge_everything), so the new deploy is served immediately.
+      - name: Purge Cloudflare cache (by host)
+        if: ${{ env.CF_API_TOKEN != '' && env.CF_ZONE_ID != '' }}
+        run: |
+          set -euo pipefail
+          echo "Purging Cloudflare cache for host $SITE_HOST ..."
+          resp=$(curl -fsS -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"hosts\":[\"$SITE_HOST\"]}")
+          echo "$resp"
+          if [ "$(echo "$resp" | jq -r '.success')" != "true" ]; then
+            echo "::error::Cloudflare purge failed."
+            exit 1
+          fi
+          echo "Purged $SITE_HOST from Cloudflare."
 
   # Records the deployment to the "production" environment (shown on the repo
   # Deployments page) — only after Coolify reports success.
