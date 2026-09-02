@@ -29,23 +29,22 @@ https://rainbow-keyboard.teraren.com/
 
 ## 🚀 Getting Started
 
-This is a [Next.js](https://nextjs.org/) application. [pnpm](https://pnpm.io/) is
+This is a [Next.js](https://nextjs.org/) application. [Bun](https://bun.sh/) is
 used as the package manager.
 
 ```bash
 # Install dependencies
-pnpm install
+bun install
 
 # Start the dev server (http://localhost:3000)
-pnpm dev
+bun run dev
 ```
 
 Other scripts:
 
 ```bash
-pnpm build   # Production build
-pnpm start   # Run the production build
-pnpm lint    # Lint with Next.js ESLint
+bun run build   # Production build
+bun run start   # Run the production build
 ```
 
 Open the page in a browser and start pressing keys.
@@ -109,22 +108,21 @@ https://rainbow-keyboard.teraren.com/
 ## 🚀 はじめに
 
 本アプリは [Next.js](https://nextjs.org/) 製で、パッケージマネージャーに
-[pnpm](https://pnpm.io/) を使用します。
+[Bun](https://bun.sh/) を使用します。
 
 ```bash
 # 依存関係のインストール
-pnpm install
+bun install
 
 # 開発サーバーの起動（http://localhost:3000）
-pnpm dev
+bun run dev
 ```
 
 その他のスクリプト:
 
 ```bash
-pnpm build   # 本番ビルド
-pnpm start   # 本番ビルドの起動
-pnpm lint    # Next.js ESLint によるチェック
+bun run build   # 本番ビルド
+bun run start   # 本番ビルドの起動
 ```
 
 ブラウザでページを開き、キーを押して遊んでください。
