@@ -17,25 +17,24 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 10
+          bun-version: 1.4.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Type-check
-        run: pnpm exec tsc --noEmit
+        run: bunx tsc --noEmit
 
       - name: Build
-        run: pnpm build
+        run: bun run build
 
   # Triggers the Coolify deployment and waits for it to finish. Only after the
   # build (check) passes, and only on pushes to main.

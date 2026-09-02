@@ -102,7 +102,7 @@ export default function KeyboardDisplay({ dictionary, speechLang }: KeyboardDisp
   }
 
   return (
-    <div className="relative flex h-[100dvh] min-h-[100dvh] w-full select-none items-center justify-center overflow-hidden bg-black [touch-action:manipulation]">
+    <div className="relative flex h-dvh min-h-dvh w-full select-none items-center justify-center overflow-hidden bg-black touch-manipulation">
       <AnimatePresence>
         {letters.map((letter) => (
           <motion.div
@@ -132,7 +132,7 @@ export default function KeyboardDisplay({ dictionary, speechLang }: KeyboardDisp
         onClick={toggleMute}
         aria-pressed={muted}
         aria-label={muted ? dictionary.unmute : dictionary.mute}
-        className="fixed right-4 top-4 z-30 rounded-full bg-gray-800/70 p-3 text-gray-300 [touch-action:manipulation] hover:text-white"
+        className="fixed right-4 top-4 z-30 rounded-full bg-gray-800/70 p-3 text-gray-300 touch-manipulation hover:text-white"
       >
         {muted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
       </button>
@@ -143,7 +143,7 @@ export default function KeyboardDisplay({ dictionary, speechLang }: KeyboardDisp
         <button
           type="button"
           onClick={handleStart}
-          className="absolute inset-0 z-40 flex items-center justify-center bg-black/90 px-6 text-center text-3xl font-bold text-white [touch-action:manipulation]"
+          className="absolute inset-0 z-40 flex items-center justify-center bg-black/90 px-6 text-center text-3xl font-bold text-white touch-manipulation"
         >
           {dictionary.tapToStart}
         </button>
