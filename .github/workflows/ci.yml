@@ -60,8 +60,12 @@ jobs:
             exit 1
           fi
           base="${COOLIFY_BASE_URL%/}"
-          resp=$(curl -fsS "$base/api/v1/deploy?uuid=$APP_UUID" \
-            -H "Authorization: Bearer $COOLIFY_API_TOKEN")
+          # Coolify answers GET with 405 "This endpoint has changed to a POST
+          # request." as of 4.3.14, so send the uuid as a JSON body instead.
+          resp=$(curl -fsS -X POST "$base/api/v1/deploy" \
+            -H "Authorization: Bearer $COOLIFY_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"uuid\":\"$APP_UUID\"}")
           echo "$resp"
           uuid=$(echo "$resp" | jq -r '(.deployments // .data.deployments)[0].deployment_uuid // empty')
           if [ -z "$uuid" ]; then
