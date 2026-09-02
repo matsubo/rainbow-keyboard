@@ -26,7 +26,7 @@ export default function OnScreenKeyboard({ onKeyTap }: OnScreenKeyboardProps) {
               type="button"
               aria-label={`Key ${key}`}
               onClick={() => onKeyTap(key)}
-              className="h-12 min-w-0 flex-1 rounded-md bg-gray-700 text-base font-bold text-white [touch-action:manipulation] active:bg-gray-500 sm:text-lg"
+              className="h-12 min-w-0 flex-1 rounded-md bg-gray-700 text-base font-bold text-white touch-manipulation active:bg-gray-500 sm:text-lg"
             >
               {key}
             </button>

@@ -17,7 +17,7 @@ export default async function Home({
   const githubUrl = 'https://github.com/matsubo/rainbow-keyboard'
 
   return (
-    <main className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-black p-0">
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden bg-black p-0">
       <h1 className="sr-only">{dictionary.heading}</h1>
       <KeyboardDisplay dictionary={dictionary} speechLang={speechLangFor(current)} />
       <GoogleAnalytics gaId="G-WX3ZJHM72Z" />
