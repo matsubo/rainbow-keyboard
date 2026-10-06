@@ -1,0 +1,74 @@
+# Applied by .github/workflows/deploy.yml on every push to main, with IMAGE
+# replaced by ghcr.io/matsubo/rainbow-keyboard:<commit sha>. The namespace and
+# the deployer's RBAC are cluster-side and live in matsubo/network-setting
+# (k8s/rainbow-keyboard.yaml).
+#
+# Every page is pre-rendered by `next build` and nothing is written at runtime,
+# so the pods are stateless and need no volume or secret.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rainbow-keyboard
+  namespace: rainbow-keyboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: rainbow-keyboard }
+  template:
+    metadata:
+      labels: { app: rainbow-keyboard }
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: { app: rainbow-keyboard }
+      containers:
+        - name: rainbow-keyboard
+          image: IMAGE
+          ports:
+            - { name: http, containerPort: 3000 }
+          # / redirects (307) to a locale picked from Accept-Language, so probe
+          # a concrete locale page.
+          startupProbe:
+            httpGet: { path: /en, port: http }
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet: { path: /en, port: http }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /en, port: http }
+            periodSeconds: 30
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rainbow-keyboard
+  namespace: rainbow-keyboard
+spec:
+  selector: { app: rainbow-keyboard }
+  ports:
+    - { name: http, port: 80, targetPort: http }
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rainbow-keyboard
+  namespace: rainbow-keyboard
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: rainbow-keyboard.teraren.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rainbow-keyboard
+                port: { name: http }

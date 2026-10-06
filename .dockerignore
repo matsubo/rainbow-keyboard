@@ -1,0 +1,11 @@
+.git
+.github
+node_modules
+.next
+out
+.env*
+*.tsbuildinfo
+next-env.d.ts
+Dockerfile
+.dockerignore
+deploy
