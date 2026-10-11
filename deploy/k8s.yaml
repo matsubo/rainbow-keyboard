@@ -54,9 +54,11 @@ spec:
           lifecycle:
             preStop:
               sleep: { seconds: 10 }
+          # Working set 2026-10-07..12 (78h, excluding the 10-09/10 migration):
+          # p95 133 MiB, max 135 MiB; CPU p95 1m, max 8m.
           resources:
-            requests: { cpu: 50m, memory: 128Mi }
-            limits: { memory: 512Mi }
+            requests: { cpu: 10m, memory: 160Mi }
+            limits: { memory: 240Mi }
 ---
 # A drain (kubectl drain, kured) evicts at most one pod at a time and waits for
 # its replacement to become ready before taking the next one.
