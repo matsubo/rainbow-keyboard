@@ -25,6 +25,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Shown on the repository's Deployments page.
+    environment:
+      name: production
+      url: https://rainbow-keyboard.teraren.com
     steps:
       - uses: actions/checkout@v7
 
@@ -74,3 +78,23 @@ jobs:
           export KUBECONFIG="$RUNNER_TEMP/kubeconfig"
           sed "s|image: IMAGE$|image: $IMAGE:$GITHUB_SHA|" deploy/k8s.yaml | kubectl apply -f -
           kubectl -n rainbow-keyboard rollout status deploy/rainbow-keyboard --timeout=300s
+
+      # Purge only this host's cached objects from the shared teraren.com zone
+      # (not purge_everything), so the new deploy is served immediately.
+      - name: Purge Cloudflare cache (by host)
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          SITE_HOST: rainbow-keyboard.teraren.com
+        run: |
+          set -euo pipefail
+          resp=$(curl -fsS -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"hosts\":[\"$SITE_HOST\"]}")
+          echo "$resp"
+          if [ "$(echo "$resp" | jq -r '.success')" != "true" ]; then
+            echo "::error::Cloudflare purge failed."
+            exit 1
+          fi
